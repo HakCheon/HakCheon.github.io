@@ -1,7 +1,6 @@
 import decimal
 
 import requests
-import simplejson as json
 from bs4 import BeautifulSoup
 from flask import Flask, render_template
 
@@ -89,12 +88,12 @@ def index():
 
         info_list.append(info)
 
-    print(json.dumps(info_list, ensure_ascii=False))
+    # print(json.dumps(info_list, ensure_ascii=False))
 
     standard_rate = standard_rate * decimal.Decimal("100")
 
     info_list.sort(reverse=True, key=lambda element: element["continue"])
-    
+
     return render_template('index.html', info_list=info_list, standard_rate=standard_rate)
 
 
