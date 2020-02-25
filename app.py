@@ -1,15 +1,16 @@
-from flask import Flask
-import requests
-import json
-from bs4 import BeautifulSoup
 import decimal
+
+import requests
 import simplejson as json
+from bs4 import BeautifulSoup
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
 
 @app.route('/')
-def hello_world():
+def index():
+    # return render_template('index.html')
     # 선택자 정보
     name = '#giName'
     price = 'body > div:nth-child(1) > div > div:nth-child(1) > header > div.stockInfoB > ul > div > div > li:nth-child(2) > div > span.stkN > strong > span'
@@ -22,9 +23,7 @@ def hello_world():
             0].text) / decimal.Decimal('100')
     print("표준요율 >>>> " + str(standard_rate))
 
-    ticker_list = ['046890', '215200', '009150', '018260', '018250', '032500', '004000', '028150', '230360', '039440']
-                   # '033290', '036490', '098460', '009410', '278280', '008770', '018250', '033660', '192820', '097520',
-                   # '005930', '068270', '089010', '060250', '086450', '058470', '119860', '009830', '234340', ]
+    ticker_list = ['046890', '215200', '009150', '018260', '018250', '032500', '004000', '028150', '230360', '039440', '033290', '036490', '098460', '009410', '278280', '008770', '018250', '033660', '192820', '097520', '005930', '068270', '089010', '060250', '086450', '058470', '119860', '009830', '234340']
 
     # 종목별 정보
     info_list = []
@@ -33,7 +32,7 @@ def hello_world():
         info["ticker"] = ticker
         # 카카오스탁 정보
         kakao_res = requests.get('https://stockplus.com/api/securities/KOREA-A' + ticker + '.json')
-        info["price"] = kakao_res.json()["recentSecurity"]["displayedPrice"]
+        info["price"] = decimal.Decimal(kakao_res.json()["recentSecurity"]["displayedPrice"])
         info["name"] = kakao_res.json()["recentSecurity"]["name"]
         info["market"] = kakao_res.json()["recentSecurity"]["market"]
 
@@ -59,11 +58,11 @@ def hello_world():
             # 카카오스탁 정보
             ticker_w = ticker[:5] + '5'
             kakao_w_res = requests.get('https://stockplus.com/api/securities/KOREA-A' + ticker_w + '.json')
-            if( kakao_w_res.status_code == '200'):
+            if (kakao_w_res.status_code == '200'):
                 info["price_w"] = decimal.Decimal(kakao_w_res.json()["recentSecurity"]["displayedPrice"])
 
         info["profit"] = decimal.Decimal(info["volume"]) * (decimal.Decimal(info["roe21"]) - standard_rate)
-        # 계속 이익
+        # 계속 이익 
         info["continue"] = ((info["volume"] + (info["profit"] / standard_rate)) * decimal.Decimal('100000000')) - (info["stock_cnt_w"] * info["price_w"])
         info["continue_price"] = int(info["continue"] / info["move_stock_cnt"])
         # 10프로 할인 이익
@@ -73,11 +72,28 @@ def hello_world():
         info["discount20"] = ((info["volume"] + (info["profit"] * decimal.Decimal('0.8') / (decimal.Decimal('1') + standard_rate - decimal.Decimal('0.8')))) * decimal.Decimal('100000000')) - (info["stock_cnt_w"] * info["price_w"])
         info["discount20_price"] = int(info["discount20"] / info["move_stock_cnt"])
 
-        print(info)
+        info["roe21"] = info["roe21"] * decimal.Decimal("100")
+
+        if (info["price"].compare(info["continue_price"]) > 0):
+            info["cd"] = 4
+        elif (info["price"].compare(info["discount10_price"]) > 0):
+            info["cd"] = 3
+        elif (info["price"].compare(info["discount20_price"]) > 0):
+            info["cd"] = 2
+        else:
+            info["cd"] = 1
+
+        info["continue_diff"] = (info["continue_price"] - info["price"]) / info["price"] * decimal.Decimal("100")
+        info["discount10_diff"] = (info["discount10_price"] - info["price"]) / info["price"] * decimal.Decimal("100")
+        info["discount20_diff"] = (info["discount20_price"] - info["price"]) / info["price"] * decimal.Decimal("100")
+
         info_list.append(info)
 
-    return json.dumps(info_list, ensure_ascii = False)
+    print(json.dumps(info_list, ensure_ascii=False))
+
+    standard_rate = standard_rate * decimal.Decimal("100")
+    return render_template('index.html', info_list=info_list, standard_rate=standard_rate)
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', debug=True, port=8080)

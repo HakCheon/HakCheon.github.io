@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div>
+        <table class="table">
+            <caption>표준요율 -> {{ '%0.2f'|format(standard_rate|float) }} %</caption>
+            <thead>
+            <tr>
+                <th>Ticker</th>
+                <th>종목명</th>
+                <th>ROE</th>
+                <th>현재가격</th>
+                <th>계속이익가치가격</th>
+                <th>diff</th>
+                <th>10%할인가치가격</th>
+                <th>diff</th>
+                <th>20%할인격차가격</th>
+                <th>diff</th>
+                <th>계속이익가치</th>
+                <th>10%할인가치</th>
+                <th>20%할인가치</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for info in info_list %}
+                {% if info.cd == 1 %}
+                    <tr class="bg1">
+                        {% elif info.cd == 2 %}
+                    <tr class="bg2">
+                        {% elif info.cd == 3 %}
+                    <tr class="bg3">
+                        {% else %}
+                    <tr>
+                {% endif %}
+            <td>{{ info.ticker }}</td>
+            <td>{{ info.name }}</td>
+            <td class="text_right">{{ '%0.2f'|format(info.roe21|float) }} %</td>
+            <td class="text_right">{{ '{:,}'.format(info.price|round) }}</td>
+            <td class="text_right">{{ '{:,}'.format(info.continue_price) }}</td>
+            <td class="text_right">{{ '%0.2f'|format(info.continue_diff|float) }} %</td>
+            <td class="text_right">{{ '{:,}'.format(info.discount10_price) }}</td>
+            <td class="text_right">{{ '%0.2f'|format(info.discount10_diff|float) }} %</td>
+            <td class="text_right">{{ '{:,}'.format(info.discount20_price) }}</td>
+            <td class="text_right">{{ '%0.2f'|format(info.discount20_diff|float) }} %</td>
+            <td class="text_right">{{ '{:,}'.format(info.continue|round) }}</td>
+            <td class="text_right">{{ '{:,}'.format(info.discount10|round) }}</td>
+            <td class="text_right">{{ '{:,}'.format(info.discount20|round) }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
