@@ -22,7 +22,7 @@ def index():
             0].text) / decimal.Decimal('100')
     print("표준요율 >>>> " + str(standard_rate))
 
-    ticker_list = ['046890', '215200', '009150', '018260', '018250', '032500', '004000', '028150', '230360', '039440', '033290', '036490', '098460', '009410', '278280', '008770', '018250', '033660', '192820', '097520', '005930', '068270', '089010', '060250', '086450', '058470', '119860', '009830', '234340']
+    ticker_list = ['051910', '006400', '035420', '035720', '012330', '046890', '005930', '005380', '215200', '009150', '018260', '018250', '032500', '004000', '028150', '230360', '039440', '033290', '036490', '098460', '009410', '278280', '008770', '018250', '033660', '192820', '097520', '005930', '068270', '089010', '060250', '086450', '058470', '119860', '009830', '234340']
 
     # 종목별 정보
     info_list = []
@@ -40,6 +40,9 @@ def index():
         fnguide_soup = BeautifulSoup(fnguide_res.content, 'html.parser')
         info["volume"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(9) > td:nth-child(6)')[0].text.replace(",", ""))
         info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(17) > td.r.tdbg_b.cle')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
+        if standard_rate.compare(info["roe21"]) > 0 or info["roe21"] == decimal.Decimal('0'):
+            continue
+
         info["stock_cnt"] = fnguide_soup.select('#svdMainGrid1 > table > tbody > tr:nth-child(6) > tr > td')[0].text.split('/ ')[0].replace(",", "")
         info["stock_cnt_w"] = decimal.Decimal(fnguide_soup.select('#svdMainGrid1 > table > tbody > tr:nth-child(6) > tr > td')[0].text.split('/ ')[1].replace(",", ""))
 
@@ -48,9 +51,6 @@ def index():
         my_soup = BeautifulSoup(my_res.content, 'html.parser')
         info["my_stock_cnt"] = my_soup.select('#dataTable > tbody > tr:nth-child(5) > td:nth-child(3)')[0].text.replace(",", "").replace("\xa0", "0")
         info["move_stock_cnt"] = decimal.Decimal(info["stock_cnt"]) - decimal.Decimal(info["my_stock_cnt"])
-
-        if (info["roe21"] == decimal.Decimal('0')):
-            continue
 
         info["price_w"] = decimal.Decimal(0)
         if (info["stock_cnt_w"].compare(decimal.Decimal('0')) > 0):

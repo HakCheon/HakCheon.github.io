@@ -35,12 +35,12 @@
             <td>{{ info.ticker }}</td>
             <td>{{ info.name }}</td>
             <td class="text_right">{{ '%0.2f'|format(info.roe21|float) }} %</td>
-            <td class="text_right">{{ '{:,}'.format(info.price|round) }}</td>
-            <td class="text_right">{{ '{:,}'.format(info.continue_price) }}</td>
+            <td class="text_right current_price">{{ '{:,}'.format(info.price|round) }}</td>
+            <td class="text_right future_price">{{ '{:,}'.format(info.continue_price) }}</td>
             <td class="text_right">{{ '%0.2f'|format(info.continue_diff|float) }} %</td>
-            <td class="text_right">{{ '{:,}'.format(info.discount10_price) }}</td>
+            <td class="text_right future_price">{{ '{:,}'.format(info.discount10_price) }}</td>
             <td class="text_right">{{ '%0.2f'|format(info.discount10_diff|float) }} %</td>
-            <td class="text_right">{{ '{:,}'.format(info.discount20_price) }}</td>
+            <td class="text_right future_price">{{ '{:,}'.format(info.discount20_price) }}</td>
             <td class="text_right">{{ '%0.2f'|format(info.discount20_diff|float) }} %</td>
             <td class="text_right">{{ '{:,}'.format(info.continue|round) }}</td>
             <td class="text_right">{{ '{:,}'.format(info.discount10|round) }}</td>

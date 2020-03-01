@@ -2,6 +2,16 @@
     text-align: right;
 }
 
+.current_price {
+    font-weight: bolder;
+    color: #ff0000;
+}
+
+.future_price {
+    font-weight: bolder;
+    color: #0018ff;
+}
+
 .bg1 {
     background-color: #87d6ff;
 }
