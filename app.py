@@ -21,7 +21,15 @@ def index():
         soup.select('#con_tab1 > div.table_ty1 > table > tbody > tr:nth-child(11) > td:nth-child(9)')[
             0].text) / decimal.Decimal('100')
 
-    ticker_list = ['000660', '091990', '035760', '263750', '253450', '247540', '005380', '035720', '207940', '002790', '000270', '051910', '036570', '051910', '006400', '035420', '035720', '046890', '005380', '215200', '009150', '018260', '032500', '230360', '039440', '033290', '036490', '009410', '008770', '018250', '192820', '097520', '005930', '068270', '089010', '060250', '086450', '058470', '009830', '234340']
+    ticker_list = ['000660', '091990', '035760', '263750', '253450',
+                   '247540', '005380', '035720', '207940', '002790',
+                   '000270', '051910', '036570', '006400', '035420',
+                   '009150', '018260', '032500', '230360', '039440',
+                   '033290', '036490', '009410', '008770', '018250',
+                   '192820', '097520', '005930', '068270', '089010',
+                   '060250', '086450', '058470', '009830', '234340',
+                   '035720', '046890', '005380', '215200', ]
+    ticker_list = list(set(ticker_list))
 
     # 종목별 정보
     info_list = []
@@ -35,11 +43,12 @@ def index():
         info["market"] = kakao_res.json()["recentSecurity"]["market"]
 
         # 에프앤가이드 정보
-        fnguide_res = requests.get('http://comp.fnguide.com/SVO2/asp/SVD_Main.asp?pGB=1&gicode=A' + ticker + '&cID=&MenuYn=Y&ReportGB=&NewMenuID=101&stkGb=701')
+        fnUrl = 'http://comp.fnguide.com/SVO2/asp/SVD_Main.asp?pGB=1&gicode=A' + ticker + '&cID=&MenuYn=Y&ReportGB=&NewMenuID=101&stkGb=701'
+        fnguide_res = requests.get(fnUrl)
         fnguide_soup = BeautifulSoup(fnguide_res.content, 'html.parser')
         info["volume"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(10) > td:nth-child(6)')[0].text.replace(",", ""))
 
-        info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(18) > td:nth-child(8)')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
+        info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(18) > td.r.tdbg_b.cle')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
         # #highlight_D_Y > table > tbody > tr:nth-child(18) > td:nth-child(8)
         # #highlight_D_Y > table > tbody > tr:nth-child(18) > td.r.tdbg_b.cle
         if standard_rate.compare(info["roe21"]) > 0 or info["roe21"] == decimal.Decimal('0'):
