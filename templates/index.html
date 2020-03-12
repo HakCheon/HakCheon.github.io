@@ -2,8 +2,8 @@
 
 {% block content %}
     <div>
+        <h1>금리스프레드 -> {{ '%0.2f'|format(standard_rate|float) }} %</h1>
         <table class="table">
-            <caption>표준요율 -> {{ '%0.2f'|format(standard_rate|float) }} %</caption>
             <thead>
             <tr>
                 <th>Ticker</th>
