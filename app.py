@@ -48,9 +48,11 @@ def index():
         fnguide_soup = BeautifulSoup(fnguide_res.content, 'html.parser')
         info["volume"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(10) > td:nth-child(6)')[0].text.replace(",", ""))
 
-        info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(18) > td.r.tdbg_b.cle')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
-        # #highlight_D_Y > table > tbody > tr:nth-child(18) > td:nth-child(8)
-        # #highlight_D_Y > table > tbody > tr:nth-child(18) > td.r.tdbg_b.cle
+        # 내년
+        info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(18) > td:nth-child(8)')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
+        # 내후년
+        # info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(18) > td.r.tdbg_b.cle')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
+        
         if standard_rate.compare(info["roe21"]) > 0 or info["roe21"] == decimal.Decimal('0'):
             continue
 
