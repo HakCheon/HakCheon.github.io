@@ -16,9 +16,10 @@
                 <th>diff</th>
                 <th>20%할인격차가격</th>
                 <th>diff</th>
-                <th>계속이익가치</th>
-                <th>10%할인가치</th>
-                <th>20%할인가치</th>
+                <th>계속이익가치 (억)</th>
+                <th>10%할인가치 (억)</th>
+                <th>20%할인가치 (억)</th>
+                <th>현재 가치 (억)</th>
             </tr>
             </thead>
             <tbody>
@@ -45,6 +46,7 @@
             <td class="text_right">{{ '{:,}'.format(info.continue|round) }}</td>
             <td class="text_right">{{ '{:,}'.format(info.discount10|round) }}</td>
             <td class="text_right">{{ '{:,}'.format(info.discount20|round) }}</td>
+            <td class="text_right">{{ '{:,}'.format(info.volume|round) }}</td>
             </tr>
             {% endfor %}
             </tbody>

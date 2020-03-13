@@ -52,7 +52,7 @@ def index():
         info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(18) > td:nth-child(8)')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
         # 내후년
         # info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(18) > td.r.tdbg_b.cle')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
-        
+
         if standard_rate.compare(info["roe21"]) > 0 or info["roe21"] == decimal.Decimal('0'):
             continue
 
@@ -98,6 +98,10 @@ def index():
         info["continue_diff"] = (info["continue_price"] - info["price"]) / info["price"] * decimal.Decimal("100")
         info["discount10_diff"] = (info["discount10_price"] - info["price"]) / info["price"] * decimal.Decimal("100")
         info["discount20_diff"] = (info["discount20_price"] - info["price"]) / info["price"] * decimal.Decimal("100")
+
+        info["continue"] = info["continue"] / decimal.Decimal(100000000)
+        info["discount10"] = info["discount10"] / decimal.Decimal(100000000)
+        info["discount20"] = info["discount20"] / decimal.Decimal(100000000)
 
         info_list.append(info)
 
