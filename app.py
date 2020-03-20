@@ -47,10 +47,18 @@ def index():
         fnUrl = 'http://comp.fnguide.com/SVO2/asp/SVD_Main.asp?pGB=1&gicode=A' + ticker + '&cID=&MenuYn=Y&ReportGB=&NewMenuID=101&stkGb=701'
         fnguide_res = requests.get(fnUrl)
         fnguide_soup = BeautifulSoup(fnguide_res.content, 'html.parser')
+
+        # svdMainGrid1 > table > tbody > tr:nth-child(4) > td:nth-child(2)
+        info["stock_sum"] = fnguide_soup.select('#svdMainGrid1 > table > tbody > tr:nth-child(4) > td:nth-child(2)')[0].text
+
+        isLink = fnguide_soup.select('#highlight_B_A')[0].attrs['style'] == 'display:none;'
         info["volume"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(10) > td:nth-child(6)')[0].text.replace(",", ""))
+        info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(18) > td:nth-child(8)')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
+        if info["roe21"] == decimal.Decimal('0'):
+            info["volume"] = decimal.Decimal(fnguide_soup.select('#highlight_B_Y > table > tbody > tr:nth-child(7) > td:nth-child(6)')[0].text.replace(",", ""))
+            info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_B_Y > table > tbody > tr:nth-child(14) > td:nth-child(8)')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
 
         # 내년
-        info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(18) > td:nth-child(8)')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
         # 내후년
         # info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(18) > td.r.tdbg_b.cle')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
 
@@ -103,10 +111,7 @@ def index():
         info["continue"] = info["continue"] / decimal.Decimal(100000000)
         info["discount10"] = info["discount10"] / decimal.Decimal(100000000)
         info["discount20"] = info["discount20"] / decimal.Decimal(100000000)
-
         info_list.append(info)
-
-    # print(json.dumps(info_list, ensure_ascii=False))
 
     standard_rate = standard_rate * decimal.Decimal("100")
 
