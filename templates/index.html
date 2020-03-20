@@ -47,7 +47,7 @@
             <td class="text_right">{{ '{:,}'.format(info.discount10|round) }}</td>
             <td class="text_right">{{ '{:,}'.format(info.discount20|round) }}</td>
             <td class="text_right">{{ '{:,}'.format(info.volume|round) }}</td>
-            <td class="text_right">{{ '{:,}'.format(info.stock_sum) }}</td>
+            <td class="text_right">{{ info.stock_sum }}</td>
             </tr>
             {% endfor %}
             </tbody>
