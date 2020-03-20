@@ -49,7 +49,7 @@ def index():
         fnguide_soup = BeautifulSoup(fnguide_res.content, 'html.parser')
 
         # svdMainGrid1 > table > tbody > tr:nth-child(4) > td:nth-child(2)
-        info["stock_sum"] = fnguide_soup.select('#svdMainGrid1 > table > tbody > tr:nth-child(4) > td:nth-child(2)')[0].text
+        info["stock_sum"] = decimal.Decimal(fnguide_soup.select('#svdMainGrid1 > table > tbody > tr:nth-child(4) > td:nth-child(2)')[0].text.replace(",", ""))
 
         isLink = fnguide_soup.select('#highlight_B_A')[0].attrs['style'] == 'display:none;'
         info["volume"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(10) > td:nth-child(6)')[0].text.replace(",", ""))
@@ -115,7 +115,7 @@ def index():
 
     standard_rate = standard_rate * decimal.Decimal("100")
 
-    info_list.sort(reverse=True, key=lambda element: element["continue"])
+    info_list.sort(reverse=True, key=lambda element: element["stock_sum"])
 
     return render_template('index.html', info_list=info_list, standard_rate=standard_rate)
 

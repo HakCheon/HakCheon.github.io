@@ -20,6 +20,7 @@
                 <th>10%할인가치 (억)</th>
                 <th>20%할인가치 (억)</th>
                 <th>현재 가치 (억)</th>
+                <th>현재 시총 (억)</th>
             </tr>
             </thead>
             <tbody>
@@ -47,7 +48,7 @@
             <td class="text_right">{{ '{:,}'.format(info.discount10|round) }}</td>
             <td class="text_right">{{ '{:,}'.format(info.discount20|round) }}</td>
             <td class="text_right">{{ '{:,}'.format(info.volume|round) }}</td>
-            <td class="text_right">{{ info.stock_sum }}</td>
+            <td class="text_right">{{ '{:,}'.format(info.stock_sum|round) }}</td>
             </tr>
             {% endfor %}
             </tbody>
