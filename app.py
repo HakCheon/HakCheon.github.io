@@ -28,9 +28,10 @@ def index():
                    '033290', '036490', '009410', '008770', '018250',
                    '192820', '097520', '005930', '068270', '089010',
                    '060250', '086450', '058470', '009830', '234340',
-                   '035720', '046890', '005380', '215200', ]
-    ticker_list = list(set(ticker_list))
+                   '035720', '046890', '005380', '215200']
 
+    # ticker_list = ['247540']
+    ticker_list = list(set(ticker_list))
     # 종목별 정보
     info_list = []
     for ticker in ticker_list:
@@ -46,10 +47,17 @@ def index():
         fnUrl = 'http://comp.fnguide.com/SVO2/asp/SVD_Main.asp?pGB=1&gicode=A' + ticker + '&cID=&MenuYn=Y&ReportGB=&NewMenuID=101&stkGb=701'
         fnguide_res = requests.get(fnUrl)
         fnguide_soup = BeautifulSoup(fnguide_res.content, 'html.parser')
-        info["volume"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(10) > td:nth-child(6)')[0].text.replace(",", ""))
+        isLink = fnguide_soup.select('#divHighFis > a.gbtn_f.r3.ac') != []
 
+        if isLink:
+            info["volume"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(10) > td:nth-child(6)')[0].text.replace(",", ""))
+            info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(18) > td:nth-child(8)')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
+        else:
+            info["volume"] = decimal.Decimal(fnguide_soup.select('#highlight_B_Y > table > tbody > tr:nth-child(7) > td:nth-child(6)')[0].text.replace(",", ""))
+            info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_B_Y > table > tbody > tr:nth-child(14) > td:nth-child(8)')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
         # 내년
-        info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(18) > td:nth-child(8)')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
+        # info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_B_Y > table > tbody > tr:nth-child(14) > td:nth-child(8))')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
+        # info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(18) > td:nth-child(8)')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
         # 내후년
         # info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(18) > td.r.tdbg_b.cle')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
 
@@ -104,8 +112,6 @@ def index():
         info["discount20"] = info["discount20"] / decimal.Decimal(100000000)
 
         info_list.append(info)
-
-    # print(json.dumps(info_list, ensure_ascii=False))
 
     standard_rate = standard_rate * decimal.Decimal("100")
 
