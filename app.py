@@ -27,10 +27,10 @@ def index():
                    '009150', '018260', '032500', '230360', '039440', '178320',
                    '033290', '036490', '008770', '018250', '089030', '012330',
                    '192820', '097520', '005930', '068270', '089010', '139480',
-                   '060250', '086450', '058470', '009830', '234340', '035900',
+                   '060250', '086450', '058470', '009830', '035900', '088800',
                    '035720', '046890', '005380', '215200', '066570', '090430',
                    '033640', '050890', '264450', '039560', '020150', '096770',
-                   '003670', '093370', '090460', '088800'
+                   '003670', '090460',
                    ]
     ticker_list = list(set(ticker_list))
 
@@ -55,12 +55,18 @@ def index():
 
         isLink = fnguide_soup.select('#highlight_B_A')[0].attrs['style'] == 'display:none;'
         info["volume"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(10) > td:nth-child(6)')[0].text.replace(",", ""))
-        # info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(18) > td:nth-child(8)')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
+        # 2년후
         info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(18) > td:nth-child(9)')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
         if info["roe21"] == decimal.Decimal('0'):
+            # 1년후
+            info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_D_Y > table > tbody > tr:nth-child(18) > td:nth-child(8)')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
+        if info["roe21"] == decimal.Decimal('0'):
             info["volume"] = decimal.Decimal(fnguide_soup.select('#highlight_B_Y > table > tbody > tr:nth-child(7) > td:nth-child(6)')[0].text.replace(",", ""))
-            # info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_B_Y > table > tbody > tr:nth-child(14) > td:nth-child(8)')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
-            info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_B_Y > table > tbody > tr:nth-child(14) > td:nth-child(9)')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
+            # 2년후
+            info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_B_Y > table > tbody > tr:nth-child(14) > td:nth-child(8)')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
+            if info["roe21"] == decimal.Decimal('0'):
+                # 1년후
+                info["roe21"] = decimal.Decimal(fnguide_soup.select('#highlight_B_Y > table > tbody > tr:nth-child(14) > td:nth-child(9)')[0].text.replace("\xa0", "0")) / decimal.Decimal('100')
 
         # 내년
         # 내후년
